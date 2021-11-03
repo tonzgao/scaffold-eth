@@ -11,9 +11,16 @@ contract Staker {
     exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
   }
 
-  // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
-  //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
+  uint256 public constant threshold = 1 ether;
 
+  mapping (address => uint256) public balances;
+
+  event Stake(address _address, uint256 _amount);
+
+  function stake() external payable {
+    balances[msg.sender] = balances[msg.sender] + msg.value;
+    emit Stake(msg.sender, msg.value);
+  }
 
   // After some `deadline` allow anyone to call an `execute()` function
   //  It should either call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
