@@ -16,30 +16,45 @@ contract Staker {
     uint256 public deadline = now + 30 seconds;
 
     bool public openForWithdraw = false;
+    bool public executed = false;
 
     mapping(address => uint256) public balances;
 
     event Stake(address _address, uint256 _amount);
 
-    function stake() external payable {
+    modifier notCompleted() {
+        require(executed == false, "Contract has already been executed");
+        _;
+    }
+
+    modifier deadlineReached(bool _requirement) {
+        if (_requirement) {
+            require(now >= deadline, "Deadline has not been reached");
+        } else {
+            require(now < deadline, "Deadline has already been reached");
+        }
+        _;
+    }
+
+    function stake() external payable notCompleted deadlineReached(false) {
         balances[msg.sender] = balances[msg.sender] + msg.value;
         emit Stake(msg.sender, msg.value);
     }
 
     // After some `deadline` allow anyone to call an `execute()` function
     //  It should either call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
-    function execute() external {
-        require(now >= deadline);
+    function execute() external notCompleted deadlineReached(true) {
         if (balances[msg.sender] >= threshold) {
             exampleExternalContract.complete{value: address(this).balance}();
+            executed = true;
         } else {
             openForWithdraw = true;
         }
     }
 
     // if the `threshold` was not met, allow everyone to call a `withdraw()` function
-    function withdraw() external {
-        require(openForWithdraw);
+    function withdraw() external notCompleted {
+        require(openForWithdraw, "Withdrawals are not enabled yet");
         (bool sent, bytes memory data) = msg.sender.call{
             value: balances[msg.sender]
         }("");
