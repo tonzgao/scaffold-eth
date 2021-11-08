@@ -10,4 +10,6 @@ contract YourToken is ERC20 {
     constructor() public ERC20("Your", "YUR") {
         _mint(msg.sender, 1000 * 10 ** 18);
     }
+
+    
 }
