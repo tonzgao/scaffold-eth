@@ -12,14 +12,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   const Vendor = await deployments.get("Vendor");
   const vendor = await ethers.getContract("Vendor", deployer);
-  console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
+  // console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
 
-  //Todo: transfer the tokens to the vendor
-  const result = await yourToken.transfer( vendor.address, ethers.utils.parseEther("1000") );
+  // //Todo: transfer the tokens to the vendor
+  // const result = await yourToken.transfer( vendor.address, ethers.utils.parseEther("1000") );
 
-  //console.log("\n 🤹  Sending ownership to frontend address...\n")
-  // ToDo: change address with your burner wallet address vvvv
-  await vendor.transferOwnership( "0x998eb728d68f84A365277f2901BEA38cFbEf0d75" );
+  // //console.log("\n 🤹  Sending ownership to frontend address...\n")
+  // // ToDo: change address with your burner wallet address vvvv
+  // await vendor.transferOwnership( "0x998eb728d68f84A365277f2901BEA38cFbEf0d75" );
 };
 
 module.exports.tags = ["Vendor"];
